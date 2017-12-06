@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yb.shardingjdbctest.dao.PhoneMapper" >
+
+    <insert id="save" parameterType="com.yb.shardingjdbctest.domain.Phone">
+        INSERT INTO phone
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test='id != null and id != "" '>
+                id,
+            </if>
+            <if test='phoneNum != null and phoneNum != "" '>
+                phone_num,
+            </if>
+            <if test='datetime != null and datetime != "" '>
+                datetime,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test='id != null and id != "" '>
+                #{id, jdbcType=VARCHAR},
+            </if>
+            <if test='phoneNum != null and phoneNum != "" '>
+                #{phoneNum, jdbcType=VARCHAR},
+            </if>
+            <if test='datetime != null and datetime != "" '>
+                #{datetime, jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <select id="getPhoneByPhoneId" resultType="com.yb.shardingjdbctest.domain.Phone">
+        SELECT id                    AS id,
+        phone_num                   AS phoneNum,
+        datetime   AS datetime
+        FROM phone
+        WHERE phone_num = #{phoneNum, jdbcType=VARCHAR}
+    </select>
+
+    <select id="getPhoneByPhoneIdAndDatetime" resultType="com.yb.shardingjdbctest.domain.Phone">
+        SELECT id                    AS id,
+        phone_num                   AS phoneNum,
+        datetime   AS datetime
+        FROM phone
+        WHERE phone_num = #{phoneNum, jdbcType=VARCHAR}
+        AND datetime = #{datetime, jdbcType=VARCHAR}
+    </select>
+
+</mapper>

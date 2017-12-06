@@ -1,0 +1,12 @@
+server:
+  port: 8088
+  address: 127.0.0.1
+
+mybatis:
+  mapper-locations: classpath:sqlmapper/*.xml
+
+pagehelper:
+  helperDialect: mysql
+  reasonable: true
+  supportMethodsArguments: true
+  params: count=countSql
