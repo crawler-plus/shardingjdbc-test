@@ -1,6 +1,6 @@
 package com.yb.shardingjdbctest.controller;
 
-import com.dangdang.ddframe.rdb.sharding.id.generator.IdGenerator;
+import com.dangdang.ddframe.rdb.sharding.keygen.KeyGenerator;
 import com.github.pagehelper.PageHelper;
 import com.yb.shardingjdbctest.domain.BaseEntity;
 import com.yb.shardingjdbctest.domain.Phone;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 /**
- * 文章Controller
+ * 手机Controller
  */
 
 @RestController
@@ -25,7 +25,7 @@ public class PhoneController {
 	private PhoneService phoneService;
 
 	@Autowired
-	private IdGenerator idGenerator;
+	private KeyGenerator idGenerator;
 
 	/**
 	 * 保存手机号信息
@@ -33,7 +33,7 @@ public class PhoneController {
 	@GetMapping(path = "/savePhone/{phoneNum}/{datetime}")
 	public BaseEntity savePhone(@PathVariable("phoneNum") String phoneNum, @PathVariable("datetime") String datetime) {
 		Phone phone = new Phone();
-		phone.setId(String.valueOf(idGenerator.generateId().longValue()));
+		phone.setId(String.valueOf(idGenerator.generateKey().longValue()));
 		phone.setPhoneNum(phoneNum);
 		phone.setDatetime(datetime);
 		phoneService.save(phone);
@@ -45,6 +45,7 @@ public class PhoneController {
 	 */
 	@GetMapping("/getPhoneByPhoneId/{phoneNum}")
 	public BaseEntity getPhoneByPhoneId(@PathVariable("phoneNum") String phoneNum) {
+		long start = System.currentTimeMillis();
 		// 分页查询
 		PageHelper.startPage(1,4);
 		Phone phone = new Phone();
@@ -53,6 +54,7 @@ public class PhoneController {
 		BaseEntity be = new BaseEntity();
 		be.setMsgCode("200");
 		be.setContent(phones);
+		System.out.println(System.currentTimeMillis() - start);
 		return be;
 	}
 
@@ -73,5 +75,29 @@ public class PhoneController {
 		return be;
 	}
 
+	/**
+	 * 批量保存手机号信息
+	 */
+	@GetMapping("/batchSavePhones")
+	public BaseEntity batchSavePhones() {
+		long start = System.currentTimeMillis();
+		for(long i = 13000000000L; i < 13000099999L; i ++) {
+			Phone phone = new Phone();
+			phone.setId(String.valueOf(idGenerator.generateKey().longValue()));
+			phone.setPhoneNum(String.valueOf(i));
+			phone.setDatetime("201712");
+			phoneService.save(phone);
+		}
+		System.out.println(System.currentTimeMillis() - start);
+		return new BaseEntity();
+	}
+
+	/**
+	 * used for ab testing!
+	 */
+	@GetMapping("/test")
+	public BaseEntity test() {
+		return new BaseEntity();
+	}
 
 }
